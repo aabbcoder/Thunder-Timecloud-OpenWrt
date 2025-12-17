@@ -37,9 +37,9 @@ jobs:
             ./dl
             ./staging_dir
             ./feeds
-          key: ubuntu2204-timecloud-21027-base-${{ hashFiles('configs/base.config') }}
+          key: ubuntu2204-timecloud-21027-${{ hashFiles('configs/base.config') }}
           restore-keys: |
-            ubuntu2204-timecloud-21027-base-
+            ubuntu2204-timecloud-21027-
 
       # 步骤4：拉取OpenWrt 21.02.7官方源码（固定版本）
       - name: Clone OpenWrt 21.02.7 Source
@@ -96,11 +96,11 @@ jobs:
       - name: Upload to Releases
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: Timecloud-21.02.7-base-${{ github.run_id }}
-          name: Timecloud OpenWrt 21.02.7 (base)
+          tag_name: Timecloud-21.02.7-${{ github.run_id }}
+          name: Timecloud OpenWrt 21.02.7
           files: openwrt/bin/targets/ramips/mt7621/*.bin
           body: |
-            📦 Thunder Timecloud 定制固件（21.02.7 基础版）
+            📦 Thunder Timecloud 定制固件（21.02.7）
             - 适配硬件：16M闪存 + 128M内存
             - 预装核心：Transmission + Samba4 + 中文LuCI
             - 特点：精简体积，稳定运行
