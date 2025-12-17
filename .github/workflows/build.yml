@@ -37,7 +37,7 @@ jobs:
             ./dl
             ./staging_dir
             ./feeds
-          key: ubuntu2204-timecloud-21027-${{ hashFiles('configs/base.config') }}
+          key: ubuntu2204-timecloud-21027-${{ hashFiles('configs/build.config') }}
           restore-keys: |
             ubuntu2204-timecloud-21027-
 
@@ -53,21 +53,24 @@ jobs:
           # 更新插件源
           ./scripts/feeds update -a
 
-      # 步骤5：导入configs/base.config（固定基础版配置）
+      # 步骤5：导入配置
       - name: Import Custom Config
         run: |
           cd openwrt
-          # 固定读取configs/base.config
-          CONFIG_FILE="$GITHUB_WORKSPACE/configs/base.config"
+          # 编译配置
+          CONFIG_FILE="$GITHUB_WORKSPACE/configs/build.config"
           
-          # 容错：配置文件不存在时终止编译并提示
           if [ ! -f "$CONFIG_FILE" ]; then
-            echo "❌ 配置文件不存在：$CONFIG_FILE"
+            echo "❌ 编译配置不存在：$CONFIG_FILE"
             exit 1
           fi
           
           # 复制配置到源码目录
           cp "$CONFIG_FILE" ./.config
+          
+          # 复制预置的 UCI 配置到源码目录
+          cp -r "$GITHUB_WORKSPACE/files" ./
+          
           # 安装插件依赖
           ./scripts/feeds install -a
           # 自动补全配置依赖（避免缺失组件）
@@ -88,7 +91,7 @@ jobs:
       - name: Upload to Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Timecloud-21.02.7-base
+          name: Timecloud-21.02.7
           path: openwrt/bin/targets/ramips/mt7621/
           retention-days: 30
 
